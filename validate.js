@@ -3,10 +3,11 @@ var reqErrMsg = document.querySelectorAll('.reqErrMsg');
 var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
 var min10Max25 = document.querySelector('.min10Max25');
+var reqMin10Max25 = document.querySelector('.reqMin10Max25');
 var minMaxErr = document.querySelector('.minMaxErr');
-var errMsg = "";
+var reqMinMaxErr = document.querySelector('.reqMinMaxErr');
 
-console.log('hello')
+var errMsg = "";
 
 /**
  * Validates if no input entered
@@ -17,8 +18,7 @@ function requiredFields() {
     requiredField.forEach(function (field) {
         if (field.value === "") {
             reqErrMsg.forEach(function (el) {
-                el.textContent = "This field must be completed";
-                console.log(el)
+                el.textContent = "A value is required for this field";
             })
         }
     })
@@ -30,21 +30,25 @@ function requiredFields() {
  * @param inputTxt String length to be checked
  * @param maxLength Int maximum accepted string length
  * @param minLength Int minimum accepted string length
- * @param el String HTML of element to insert error message into
+ * @param element String HTML of element to insert error message into
  *
  * @return error message if string length greater or less than specified
  */
-function validateLength(inputTxt, maxLength, minLength, el) {
+function validateLength(inputTxt, maxLength, minLength, element, required) {
 
     var errMsg = "";
 
-    if (inputTxt.length > maxLength)
+    if (inputTxt.length > maxLength && required === true) {
         errMsg += "Maximum " + maxLength + " characters allowed";
-
-    if (inputTxt.length < minLength)
+    } else if (inputTxt.length > maxLength && required !== true) {
+        errMsg += "Optional field. If filled, number of characters must be " + maxLength + " or less.";
+    }
+    if (inputTxt.length < minLength && required === true) {
         errMsg += "Minimum " + minLength + " characters required";
-
-    el.textContent = errMsg;
+    } else if (inputTxt.length < minLength && required !== true) {
+        errMsg += "Optional field. If filled, number of characters must be " + minLength + " or more.";
+    }
+    element.textContent = errMsg;
 }
 
 /**
@@ -59,8 +63,12 @@ document.querySelector("form").addEventListener('submit', function(e) {
     requiredFields();
 
     // validate string lengths
-    validateLength(max8.value, 8, 0, max8Err)
-    validateLength(min10Max25.value, 25, 10, minMaxErr)
+    validateLength(max8.value, 8, 0, max8Err, false);
+    validateLength(reqMin10Max25.value, 25, 10, reqMinMaxErr, true);
+
+    if (min10Max25.value)
+        validateLength(min10Max25.value, 25, 10, minMaxErr, false);
+
 
 
     // if no error message(s) submit form
