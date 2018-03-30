@@ -1,3 +1,4 @@
-.reqErrMsg {
+.reqErrMsg,
+.maxLength8Err {
     color: red;
 }

@@ -1,10 +1,8 @@
 var requiredField = document.querySelectorAll('.required');
 var reqErrMsg = document.querySelectorAll('.reqErrMsg');
-var maxLength8 = document.querySelectorAll('.maxLength8');
-var minLength =
-var maxLength =
+var maxLength8Input = document.querySelector('.maxLength8');
+var maxLength8Err = document.querySelector('.maxLength8Err');
 
-    console.log(requiredField);
 
 // function - validate required fields
 function requiredFields() {
@@ -18,11 +16,14 @@ function requiredFields() {
     })
 }
 
-// function - validate required fields
-function maxLength8(inputTxt, minLength, maxLength) {
+// function - validate field input length
+function validateLength(inputTxt, maxLength, minLength) {
 
+    // if input text is greater than 8, throw error
+    if (inputTxt.length > maxLength) {
+        maxLength8Err.textContent = "Maximum " + maxLength + " characters allowed";
+    }
 }
-
 
 // prevent form submission until all fields validated
 document.querySelector("form").addEventListener('submit', function(e) {
@@ -32,9 +33,11 @@ document.querySelector("form").addEventListener('submit', function(e) {
     requiredFields();
 
     // validate string lengths
-    maxLength8();
+    validateLength(maxLength8Input.value, 8)
 
-})
+    // console.log(maxLength8Input.value);
+
+});
 
 
 // validate string lengths
@@ -44,10 +47,3 @@ document.querySelector("form").addEventListener('submit', function(e) {
 // prevent numbers in letter fields
 
 // change other field required state depending on radio button required state
-
-
-requestAnimationFrame()
-browsers render at max 60 FPS
-If your GPU doing other things, can slow down
-makes everything run at the optimum FPS for someones computer
-I.e. doesn’t look laggy
