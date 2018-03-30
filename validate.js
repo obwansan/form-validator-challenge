@@ -4,6 +4,7 @@ var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
 var min10Max25 = document.querySelector('.min10Max25');
 var minMaxErr = document.querySelector('.minMaxErr');
+var errMsg = "";
 
 console.log('hello')
 
@@ -16,7 +17,7 @@ function requiredFields() {
     requiredField.forEach(function (field) {
         if (field.value === "") {
             reqErrMsg.forEach(function (el) {
-                el.innerHTML = "<p>This field must be completed</p>";
+                el.textContent = "This field must be completed";
                 console.log(el)
             })
         }
@@ -35,11 +36,15 @@ function requiredFields() {
  */
 function validateLength(inputTxt, maxLength, minLength, el) {
 
+    var errMsg = "";
+
     if (inputTxt.length > maxLength)
-        el.innerHTML = "<p>Maximum " + maxLength + " characters allowed</p>";
+        errMsg += "Maximum " + maxLength + " characters allowed";
 
     if (inputTxt.length < minLength)
-        el.innerHTML += "<p>Minimum " + minLength + " characters required</p>";
+        errMsg += "Minimum " + minLength + " characters required";
+
+    el.textContent = errMsg;
 }
 
 /**
@@ -54,11 +59,12 @@ document.querySelector("form").addEventListener('submit', function(e) {
     requiredFields();
 
     // validate string lengths
-    validateLength(max8.value, 8, max8Err)
+    validateLength(max8.value, 8, 0, max8Err)
     validateLength(min10Max25.value, 25, 10, minMaxErr)
 
 
     // if no error message(s) submit form
+    // or only if no error messages on required fields?
 
 
 });

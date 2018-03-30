@@ -1,5 +1,5 @@
 .reqErrMsg,
 .maxLength8Err,
-.min10Max25 {
+.max8Err {
     color: red;
 }
