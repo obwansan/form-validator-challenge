@@ -3,12 +3,14 @@ var reqErrMsg = document.querySelectorAll('.reqErrMsg');
 var maxLength8Input = document.querySelector('.maxLength8');
 var maxLength8Err = document.querySelector('.maxLength8Err');
 
-
-// function - validate required fields
+/**
+ * Validates if no input entered
+ *
+ * @return error message if field value is empty
+ */
 function requiredFields() {
     requiredField.forEach(function (field) {
         if (field.value === "") {
-            // display appropriate error messages
             reqErrMsg.forEach(function (value) {
                 value.textContent = "This field must be completed";
             })
@@ -16,7 +18,15 @@ function requiredFields() {
     })
 }
 
-// function - validate field input length
+/**
+ * Validates field input length
+ *
+ * @param inputTxt String length to be checked
+ * @param maxLength Int maximum accepted string length
+ * @param minLength Int minimum accepted string length
+ *
+ * @return error message if string length greater or less than specified
+ */
 function validateLength(inputTxt, maxLength, minLength) {
 
     // if input text is greater than 8, throw error
@@ -25,7 +35,11 @@ function validateLength(inputTxt, maxLength, minLength) {
     }
 }
 
-// prevent form submission until all fields validated
+/**
+ * Prevents form submission until all fields validated
+ *
+ * @return error message if field value is empty
+ */
 document.querySelector("form").addEventListener('submit', function(e) {
     e.preventDefault();
 
