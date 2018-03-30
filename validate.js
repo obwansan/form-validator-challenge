@@ -1,7 +1,11 @@
 var requiredField = document.querySelectorAll('.required');
 var reqErrMsg = document.querySelectorAll('.reqErrMsg');
-var maxLength8Input = document.querySelector('.maxLength8');
-var maxLength8Err = document.querySelector('.maxLength8Err');
+var max8 = document.querySelector('.max8');
+var max8Err = document.querySelector('.max8Err');
+var min10Max25 = document.querySelector('.min10Max25');
+var minMaxErr = document.querySelector('.minMaxErr');
+
+console.log('hello')
 
 /**
  * Validates if no input entered
@@ -11,8 +15,9 @@ var maxLength8Err = document.querySelector('.maxLength8Err');
 function requiredFields() {
     requiredField.forEach(function (field) {
         if (field.value === "") {
-            reqErrMsg.forEach(function (value) {
-                value.textContent = "This field must be completed";
+            reqErrMsg.forEach(function (el) {
+                el.innerHTML = "<p>This field must be completed</p>";
+                console.log(el)
             })
         }
     })
@@ -24,15 +29,17 @@ function requiredFields() {
  * @param inputTxt String length to be checked
  * @param maxLength Int maximum accepted string length
  * @param minLength Int minimum accepted string length
+ * @param el String HTML of element to insert error message into
  *
  * @return error message if string length greater or less than specified
  */
-function validateLength(inputTxt, maxLength, minLength) {
+function validateLength(inputTxt, maxLength, minLength, el) {
 
-    // if input text is greater than 8, throw error
-    if (inputTxt.length > maxLength) {
-        maxLength8Err.textContent = "Maximum " + maxLength + " characters allowed";
-    }
+    if (inputTxt.length > maxLength)
+        el.innerHTML = "<p>Maximum " + maxLength + " characters allowed</p>";
+
+    if (inputTxt.length < minLength)
+        el.innerHTML += "<p>Minimum " + minLength + " characters required</p>";
 }
 
 /**
@@ -47,9 +54,12 @@ document.querySelector("form").addEventListener('submit', function(e) {
     requiredFields();
 
     // validate string lengths
-    validateLength(maxLength8Input.value, 8)
+    validateLength(max8.value, 8, max8Err)
+    validateLength(min10Max25.value, 25, 10, minMaxErr)
 
-    // console.log(maxLength8Input.value);
+
+    // if no error message(s) submit form
+
 
 });
 
