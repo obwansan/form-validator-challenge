@@ -1,4 +1,4 @@
-var requiredField = document.querySelectorAll('.required');
+var reqField = document.querySelectorAll('.required');
 var reqErrMsg = document.querySelectorAll('.reqErrMsg');
 var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
@@ -6,6 +6,8 @@ var min10Max25 = document.querySelector('.min10Max25');
 var reqMin10Max25 = document.querySelector('.reqMin10Max25');
 var minMaxErr = document.querySelector('.minMaxErr');
 var reqMinMaxErr = document.querySelector('.reqMinMaxErr');
+var lettersOnly = document.querySelector('.lettersOnly');
+var lettersOnlyMsg = document.querySelector('.lettersOnlyMsg');
 
 var errMsg = "";
 
@@ -15,7 +17,7 @@ var errMsg = "";
  * @return error message if field value is empty
  */
 function requiredFields() {
-    requiredField.forEach(function (field) {
+    reqField.forEach(function (field) {
         if (field.value === "") {
             reqErrMsg.forEach(function (el) {
                 el.textContent = "A value is required for this field";
@@ -38,18 +40,26 @@ function validateLength(inputTxt, maxLength, minLength, element, required) {
 
     var errMsg = "";
 
-    if (inputTxt.length > maxLength && required === true) {
+    if (inputTxt.value.length > maxLength && required === true) {
         errMsg += "Maximum " + maxLength + " characters allowed";
-    } else if (inputTxt.length > maxLength && required !== true) {
+    } else if (inputTxt.value.length > maxLength && required !== true) {
         errMsg += "Optional field. If filled, number of characters must be " + maxLength + " or less.";
     }
-    if (inputTxt.length < minLength && required === true) {
+    if (inputTxt.value.length < minLength && required === true) {
         errMsg += "Minimum " + minLength + " characters required";
     } else if (inputTxt.length < minLength && required !== true) {
         errMsg += "Optional field. If filled, number of characters must be " + minLength + " or more.";
     }
     element.textContent = errMsg;
 }
+
+
+function allLetters(inputTxt) {
+    var letters = /^[A-Za-z]+$/;
+    if(!inputTxt.value.match(letters))
+        lettersOnlyMsg.textContent = "This field must only contain letters";
+}
+
 
 /**
  * Prevents form submission until all fields validated
@@ -63,22 +73,19 @@ document.querySelector("form").addEventListener('submit', function(e) {
     requiredFields();
 
     // validate string lengths
-    validateLength(max8.value, 8, 0, max8Err, false);
-    validateLength(reqMin10Max25.value, 25, 10, reqMinMaxErr, true);
+    validateLength(max8, 8, 0, max8Err, false);
+    validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true);
 
     if (min10Max25.value)
-        validateLength(min10Max25.value, 25, 10, minMaxErr, false);
+        validateLength(min10Max25, 25, 10, minMaxErr, false);
 
-
+    allLetters(lettersOnly);
 
     // if no error message(s) submit form
     // or only if no error messages on required fields?
 
 
 });
-
-
-// validate string lengths
 
 // prevent letters in number fields
 
