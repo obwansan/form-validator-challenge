@@ -8,6 +8,9 @@ var minMaxErr = document.querySelector('.minMaxErr');
 var reqMinMaxErr = document.querySelector('.reqMinMaxErr');
 var lettersField = document.querySelector('#lettersOnly');
 var lettersOnlyMsg = document.querySelector('.lettersOnlyMsg');
+var numbersField = document.querySelector('#numbersOnly');
+var numbersOnlyMsg = document.querySelector('.numbersOnlyMsg');
+var radioBtn = document.querySelector('.radio');
 
 var errMsg = "";
 
@@ -32,25 +35,28 @@ function requiredFields() {
  * @param inputTxt String length to be checked
  * @param maxLength Int maximum accepted string length
  * @param minLength Int minimum accepted string length
- * @param element String HTML of element to insert error message into
+ * @param element String HTML of element to insert error message
+ * @param required Bool value determines if field is required
  *
  * @return error message if string length greater or less than specified
  */
-function validateLength(inputTxt, maxLength, minLength, element, required) {
+function validateLength(inputField, maxLength, minLength, element, required, callback) {
 
     var errMsg = "";
 
-    if (inputTxt.value.length > maxLength && required === true) {
-        errMsg += "Maximum " + maxLength + " characters allowed";
-    } else if (inputTxt.value.length > maxLength && required !== true) {
-        errMsg += "Optional field. If filled, number of characters must be " + maxLength + " or less.";
-    }
-    if (inputTxt.value.length < minLength && required === true) {
-        errMsg += "Minimum " + minLength + " characters required";
-    } else if (inputTxt.length < minLength && required !== true) {
-        errMsg += "Optional field. If filled, number of characters must be " + minLength + " or more.";
+    if (required === true) {
+        if (inputField.value.length > maxLength)
+            errMsg += "Maximum " + maxLength + " characters allowed";
+        if (inputField.value.length < minLength)
+            errMsg += "Minimum " + minLength + " characters required";
+    } else {
+        if (inputField.value.length > 0 && inputField.value.length < minLength)
+            errMsg += "Minimum " + minLength + " characters required";
+        if (inputField.value.length > maxLength)
+            errMsg += "Maximum " + maxLength + " characters allowed.";
     }
     element.textContent = errMsg;
+    callback(inputField);
 }
 
 function fieldFocus(inputElement) {
@@ -59,15 +65,20 @@ function fieldFocus(inputElement) {
 
 
 function allLetters(inputElement, callback) {
-
     var letters = /^[A-Za-z]+$/;
-
     if(!inputElement.value.match(letters)) {
         lettersOnlyMsg.textContent = "This field must only contain letters";
         callback(inputElement);
     }
 }
 
+function allNumbers(inputElement, callback) {
+    var numbers = /^[0-9]+$/;
+    if(!inputElement.value.match(numbers)) {
+        numbersOnlyMsg.textContent = "This field must only contain numbers";
+        callback(inputElement);
+    }
+}
 
 /**
  * Prevents form submission until all fields validated
@@ -77,26 +88,29 @@ function allLetters(inputElement, callback) {
 document.querySelector("form").addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // validate required fields (i.e. can’t be left blank)
+    // validate required fields
     requiredFields();
 
     // validate string lengths
-    validateLength(max8, 8, 0, max8Err, false);
-    validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true);
-
+    validateLength(max8, 8, 0, max8Err, false, fieldFocus);
+    validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
     if (min10Max25.value)
-        validateLength(min10Max25, 25, 10, minMaxErr, false);
+        validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
 
-    allLetters(lettersField, fieldFocus);
+    // validate only letters
+    if (lettersField.value) {
+        allLetters(lettersField, fieldFocus);
+    }
+    // validate only numbers
+    if (numbersField.value) {
+        allNumbers(numbersField, fieldFocus);
+    }
+
 
     // if no error message(s) submit form
     // or only if no error messages on required fields?
 
 
 });
-
-// prevent letters in number fields
-
-// prevent numbers in letter fields
 
 // change other field required state depending on radio button required state

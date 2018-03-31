@@ -2,6 +2,7 @@
 .maxLength8Err,
 .max8Err,
 .minMaxErr,
-.lettersOnlyMsg {
+.lettersOnlyMsg,
+.numbersOnlyMsg {
     color: red;
 }
