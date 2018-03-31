@@ -6,7 +6,7 @@ var min10Max25 = document.querySelector('.min10Max25');
 var reqMin10Max25 = document.querySelector('.reqMin10Max25');
 var minMaxErr = document.querySelector('.minMaxErr');
 var reqMinMaxErr = document.querySelector('.reqMinMaxErr');
-var lettersOnly = document.querySelector('.lettersOnly');
+var lettersField = document.querySelector('#lettersOnly');
 var lettersOnlyMsg = document.querySelector('.lettersOnlyMsg');
 
 var errMsg = "";
@@ -53,11 +53,19 @@ function validateLength(inputTxt, maxLength, minLength, element, required) {
     element.textContent = errMsg;
 }
 
+function fieldFocus(inputElement) {
+    inputElement.focus();
+}
 
-function allLetters(inputTxt) {
+
+function allLetters(inputElement, callback) {
+
     var letters = /^[A-Za-z]+$/;
-    if(!inputTxt.value.match(letters))
+
+    if(!inputElement.value.match(letters)) {
         lettersOnlyMsg.textContent = "This field must only contain letters";
+        callback(inputElement);
+    }
 }
 
 
@@ -79,7 +87,7 @@ document.querySelector("form").addEventListener('submit', function(e) {
     if (min10Max25.value)
         validateLength(min10Max25, 25, 10, minMaxErr, false);
 
-    allLetters(lettersOnly);
+    allLetters(lettersField, fieldFocus);
 
     // if no error message(s) submit form
     // or only if no error messages on required fields?
