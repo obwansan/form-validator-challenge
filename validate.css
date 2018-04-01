@@ -3,6 +3,7 @@
 .max8Err,
 .minMaxErr,
 .lettersOnlyMsg,
-.numbersOnlyMsg {
+.numbersOnlyMsg,
+.reqIfRadioChkdErrMsg {
     color: red;
 }

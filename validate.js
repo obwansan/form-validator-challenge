@@ -10,9 +10,8 @@ var lettersField = document.querySelector('#lettersOnly');
 var lettersOnlyMsg = document.querySelector('.lettersOnlyMsg');
 var numbersField = document.querySelector('#numbersOnly');
 var numbersOnlyMsg = document.querySelector('.numbersOnlyMsg');
-var radioBtn = document.querySelector('.radio');
-
-var errMsg = "";
+var radioYes = document.querySelector('#yes');
+var reqIfRadioChkdErrMsg = document.querySelector('.reqIfRadioChkdErrMsg');
 
 /**
  * Applies focus to a field that isn't valid
@@ -22,7 +21,6 @@ var errMsg = "";
 function fieldFocus(inputElement) {
     inputElement.focus();
 }
-
 /**
  * Validates if no input entered
  *
@@ -37,7 +35,6 @@ function requiredFields() {
         }
     })
 }
-
 /**
  * Validates field input length
  *
@@ -76,14 +73,13 @@ function validateLength(inputField, maxLength, minLength, element, required, cal
  *
  * @return error message if field contains any non-alphabetic characters
  */
-function allLetters(inputElement, callback) {
+function onlyLetters(inputElement, callback) {
     var letters = /^[A-Za-z]+$/;
     if(!inputElement.value.match(letters)) {
         lettersOnlyMsg.textContent = "This field must only contain letters";
         callback(inputElement);
     }
 }
-
 /**
  * Checks if field only contains numbers
  *
@@ -92,14 +88,24 @@ function allLetters(inputElement, callback) {
  *
  * @return error message if field contains any non-numeric characters
  */
-function allNumbers(inputElement, callback) {
+function onlyNumbers(inputElement, callback) {
     var numbers = /^[0-9]+$/;
     if(!inputElement.value.match(numbers)) {
         numbersOnlyMsg.textContent = "This field must only contain numbers";
         callback(inputElement);
     }
 }
-
+/**
+ * Displays error message on field if radio btn checked
+ *
+ * @return error message if radio btn checked
+ */
+function reqIfRadioChecked() {
+    if(radioYes.checked) {
+        console.log('checked');
+        reqIfRadioChkdErrMsg.textContent = "A value is required for this field";
+    }
+}
 /**
  * Prevents form submission until all fields validated
  *
@@ -108,24 +114,16 @@ function allNumbers(inputElement, callback) {
 document.querySelector("form").addEventListener('submit', function(e) {
     e.preventDefault();
 
-    // validate required fields
     requiredFields();
-
-    // validate string lengths
+    reqIfRadioChecked();
     validateLength(max8, 8, 0, max8Err, false, fieldFocus);
     validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
     if (min10Max25.value)
         validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-
-    // validate only letters
-    if (lettersField.value) {
-        allLetters(lettersField, fieldFocus);
-    }
-    // validate only numbers
-    if (numbersField.value) {
-        allNumbers(numbersField, fieldFocus);
-    }
-
+    if (lettersField.value)
+        onlyLetters(lettersField, fieldFocus);
+    if (numbersField.value)
+        onlyNumbers(numbersField, fieldFocus);
 });
 
 /* put event listeners on each field? And then pass the appropriate named function to it.
