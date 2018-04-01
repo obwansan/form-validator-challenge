@@ -15,6 +15,15 @@ var radioBtn = document.querySelector('.radio');
 var errMsg = "";
 
 /**
+ * Applies focus to a field that isn't valid
+ *
+ * @param inputElement String HTML input field
+ */
+function fieldFocus(inputElement) {
+    inputElement.focus();
+}
+
+/**
  * Validates if no input entered
  *
  * @return error message if field value is empty
@@ -59,11 +68,14 @@ function validateLength(inputField, maxLength, minLength, element, required, cal
     callback(inputField);
 }
 
-function fieldFocus(inputElement) {
-    inputElement.focus();
-}
-
-
+/**
+ * Checks if field only contains letters
+ *
+ * @param inputElement String HTML input field
+ * @param callback Function to be passed fieldFocus function
+ *
+ * @return error message if field contains any non-alphabetic characters
+ */
 function allLetters(inputElement, callback) {
     var letters = /^[A-Za-z]+$/;
     if(!inputElement.value.match(letters)) {
@@ -72,6 +84,14 @@ function allLetters(inputElement, callback) {
     }
 }
 
+/**
+ * Checks if field only contains numbers
+ *
+ * @param inputElement String HTML input field
+ * @param callback Function to be passed fieldFocus function
+ *
+ * @return error message if field contains any non-numeric characters
+ */
 function allNumbers(inputElement, callback) {
     var numbers = /^[0-9]+$/;
     if(!inputElement.value.match(numbers)) {
@@ -106,11 +126,20 @@ document.querySelector("form").addEventListener('submit', function(e) {
         allNumbers(numbersField, fieldFocus);
     }
 
-
-    // if no error message(s) submit form
-    // or only if no error messages on required fields?
-
-
 });
 
+/* put event listeners on each field? And then pass the appropriate named function to it.
+* Could then maybe make the error message appear when the user clicked out out the field...
+* using focus / blur?
+
+* if no error message(s) submit form
+* or only if no error messages on required fields?
+
+*/
+
 // change other field required state depending on radio button required state
+    // field is required if radio btn value is yes
+
+// change color of field headings from black to green if entered correctly.
+// change from black to red if not entered correctly.
+// use css to make field background red if entered incorrectly.
