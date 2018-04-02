@@ -12,6 +12,8 @@ var numbersField = document.querySelector('#numbersOnly');
 var numbersOnlyMsg = document.querySelector('.numbersOnlyMsg');
 var radioYes = document.querySelector('#yes');
 var reqIfRadioChkdErrMsg = document.querySelector('.reqIfRadioChkdErrMsg');
+var email = document.querySelector('.email');
+var invalidEmailMsg = document.querySelector('.invalidEmailMsg');
 
 /**
  * Applies focus to a field that isn't valid
@@ -64,7 +66,6 @@ function validateLength(inputField, maxLength, minLength, element, required, cal
     element.textContent = errMsg;
     callback(inputField);
 }
-
 /**
  * Checks if field only contains letters
  *
@@ -107,23 +108,43 @@ function reqIfRadioChecked() {
     }
 }
 /**
+ * Checks if email is valid
+ *
+ * @param inputElement String HTML input field
+ * @param msgElement String HTML message display field
+ * @param callback Function to be passed fieldFocus function
+ *
+ * @return error message if email doesn't match regEx
+ */
+function validateEmail(inputElement, msgElement, callback) {
+    var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if(!inputElement.value.match(mailFormat)) {
+        msgElement.textContent = "You have entered an invalid email address!";
+        callback(inputElement);
+    }
+}
+/**
  * Prevents form submission until all fields validated
  *
- * @return error message if field value is empty
+ * @return error message if field(s) not valid
  */
 document.querySelector("form").addEventListener('submit', function(e) {
     e.preventDefault();
 
     requiredFields();
     reqIfRadioChecked();
+
     validateLength(max8, 8, 0, max8Err, false, fieldFocus);
     validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
-    if (min10Max25.value)
+    if(min10Max25.value)
         validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-    if (lettersField.value)
+
+    if(lettersField.value)
         onlyLetters(lettersField, fieldFocus);
-    if (numbersField.value)
+    if(numbersField.value)
         onlyNumbers(numbersField, fieldFocus);
+
+    validateEmail(email, invalidEmailMsg, fieldFocus);
 });
 
 /* put event listeners on each field? And then pass the appropriate named function to it.
@@ -134,9 +155,6 @@ document.querySelector("form").addEventListener('submit', function(e) {
 * or only if no error messages on required fields?
 
 */
-
-// change other field required state depending on radio button required state
-    // field is required if radio btn value is yes
 
 // change color of field headings from black to green if entered correctly.
 // change from black to red if not entered correctly.
