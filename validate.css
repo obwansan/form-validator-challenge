@@ -4,7 +4,7 @@
 .minMaxErr,
 .lettersOnlyMsg,
 .numbersOnlyMsg,
-.reqIfRadioChkdErrMsg,
+.reqIfRadioChkdErr,
 .invalidEmailMsg {
     color: #ff0000;
 }

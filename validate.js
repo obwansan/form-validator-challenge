@@ -46,13 +46,16 @@ function requiredFields(inputElement, errMsgField, callback) {
  * @param inputElement String length to be checked
  * @param maxLength Int maximum accepted string length
  * @param minLength Int minimum accepted string length
- * @param element String HTML of element to insert error message
+ * @param errElement String HTML of element to insert error message
  * @param required Bool value determines if field is required
  * @param callback Function applies passed in fieldFocus()
  *
  * @return error message if string length greater or less than specified
  */
-function validateLength(inputElement, maxLength, minLength, element, required, callback) {
+
+//validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
+
+function validateLength(inputElement, maxLength, minLength, errElement, required, callback) {
 
     var errMsg = "";
 
@@ -60,11 +63,17 @@ function validateLength(inputElement, maxLength, minLength, element, required, c
         errMsg += "Maximum " + maxLength + " characters allowed";
         callback(inputElement);
     }
-    if (required === true && inputElement.value.length < maxLength) {
+    if (required === false && inputElement.value) {
+        if (inputElement.value.length < minLength) {
+            errMsg += "If value entered, minimum " + minLength + " characters required";
+            callback(inputElement);
+        }
+    }
+    if (required === true && inputElement.value.length < minLength) {
         errMsg += "A value is required for this field";
         callback(inputElement);
     }
-    element.textContent = errMsg;
+    errElement.textContent = errMsg;
 }
 /**
  * Checks if field only contains letters
@@ -135,17 +144,20 @@ document.querySelector("form").addEventListener('submit', function(e) {
     validateLength(max8, 8, 0, max8Err, false, fieldFocus);
     validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
 
-    if(min10Max25.value)
+    if(min10Max25.value) {
         validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-    if(lettersField.value)
+    }
+    if(lettersField.value) {
         onlyLetters(lettersField, fieldFocus);
-    if(numbersField.value)
+    }
+    if(numbersField.value) {
         onlyNumbers(numbersField, fieldFocus);
-
+    }
     reqIfRadioChecked(radioYes, reqIfRadioChkdErr, reqIfRadioChkd, fieldFocus);
 
-    if(emailField.value)
+    if(emailField.value) {
         validateEmail(emailField, invalidEmailErr, fieldFocus);
+    }
 });
 
 /* put event listeners on each field? And then pass the appropriate named function to it.
@@ -159,4 +171,3 @@ document.querySelector("form").addEventListener('submit', function(e) {
 
 // change color of field headings from black to green if entered correctly.
 // change from black to red if not entered correctly.
-// use css to make field background red if entered incorrectly.
