@@ -1,5 +1,5 @@
 var reqField = document.querySelectorAll('.required');
-var reqErrMsg = document.querySelectorAll('.reqErrMsg');
+var reqErr = document.querySelectorAll('.reqErrMsg');
 var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
 var min10Max25 = document.querySelector('.min10Max25');
@@ -7,13 +7,14 @@ var reqMin10Max25 = document.querySelector('.reqMin10Max25');
 var minMaxErr = document.querySelector('.minMaxErr');
 var reqMinMaxErr = document.querySelector('.reqMinMaxErr');
 var lettersField = document.querySelector('#lettersOnly');
-var lettersOnlyMsg = document.querySelector('.lettersOnlyMsg');
+var lettersOnlyErr = document.querySelector('.lettersOnlyMsg');
 var numbersField = document.querySelector('#numbersOnly');
-var numbersOnlyMsg = document.querySelector('.numbersOnlyMsg');
+var numbersOnlyErr = document.querySelector('.numbersOnlyMsg');
 var radioYes = document.querySelector('#yes');
-var reqIfRadioChkdErrMsg = document.querySelector('.reqIfRadioChkdErrMsg');
-var email = document.querySelector('.email');
-var invalidEmailMsg = document.querySelector('.invalidEmailMsg');
+var reqIfRadioChkd = document.querySelector('#reqIfRadioChkd');
+var reqIfRadioChkdErr = document.querySelector('.reqIfRadioChkdErr');
+var emailField = document.querySelector('.email');
+var invalidEmailErr = document.querySelector('.invalidEmailMsg');
 
 /**
  * Applies focus to a field that isn't valid
@@ -22,49 +23,48 @@ var invalidEmailMsg = document.querySelector('.invalidEmailMsg');
  */
 function fieldFocus(inputElement) {
     inputElement.focus();
+    inputElement.classList.add('invalidField');
 }
 /**
  * Validates if no input entered
  *
  * @return error message if field value is empty
  */
-function requiredFields() {
-    reqField.forEach(function (field) {
+function requiredFields(inputElement, errMsgField, callback) {
+    inputElement.forEach(function (field) {
         if (field.value === "") {
-            reqErrMsg.forEach(function (el) {
+            errMsgField.forEach(function (el) {
                 el.textContent = "A value is required for this field";
-            })
+            });
+            callback(field);
         }
     })
 }
 /**
  * Validates field input length
  *
- * @param inputTxt String length to be checked
+ * @param inputElement String length to be checked
  * @param maxLength Int maximum accepted string length
  * @param minLength Int minimum accepted string length
  * @param element String HTML of element to insert error message
  * @param required Bool value determines if field is required
+ * @param callback Function applies passed in fieldFocus()
  *
  * @return error message if string length greater or less than specified
  */
-function validateLength(inputField, maxLength, minLength, element, required, callback) {
+function validateLength(inputElement, maxLength, minLength, element, required, callback) {
 
     var errMsg = "";
 
-    if (required === true) {
-        if (inputField.value.length > maxLength)
-            errMsg += "Maximum " + maxLength + " characters allowed";
-        if (inputField.value.length < minLength)
-            errMsg += "Minimum " + minLength + " characters required";
-    } else {
-        if (inputField.value.length > 0 && inputField.value.length < minLength)
-            errMsg += "Minimum " + minLength + " characters required";
-        if (inputField.value.length > maxLength)
-            errMsg += "Maximum " + maxLength + " characters allowed.";
+    if (inputElement.value.length > maxLength) {
+        errMsg += "Maximum " + maxLength + " characters allowed";
+        callback(inputElement);
+    }
+    if (required === true && inputElement.value.length < maxLength) {
+        errMsg += "A value is required for this field";
+        callback(inputElement);
     }
     element.textContent = errMsg;
-    callback(inputField);
 }
 /**
  * Checks if field only contains letters
@@ -77,7 +77,7 @@ function validateLength(inputField, maxLength, minLength, element, required, cal
 function onlyLetters(inputElement, callback) {
     var letters = /^[A-Za-z]+$/;
     if(!inputElement.value.match(letters)) {
-        lettersOnlyMsg.textContent = "This field must only contain letters";
+        lettersOnlyErr.textContent = "This field must only contain letters";
         callback(inputElement);
     }
 }
@@ -92,7 +92,7 @@ function onlyLetters(inputElement, callback) {
 function onlyNumbers(inputElement, callback) {
     var numbers = /^[0-9]+$/;
     if(!inputElement.value.match(numbers)) {
-        numbersOnlyMsg.textContent = "This field must only contain numbers";
+        numbersOnlyErr.textContent = "This field must only contain numbers";
         callback(inputElement);
     }
 }
@@ -101,10 +101,10 @@ function onlyNumbers(inputElement, callback) {
  *
  * @return error message if radio btn checked
  */
-function reqIfRadioChecked() {
-    if(radioYes.checked) {
-        console.log('checked');
-        reqIfRadioChkdErrMsg.textContent = "A value is required for this field";
+function reqIfRadioChecked(radioBtn, radioBtnErrField, reqField, callback) {
+    if(radioBtn.checked) {
+        radioBtnErrField.textContent = "A value is required for this field";
+        callback(reqField);
     }
 }
 /**
@@ -131,24 +131,25 @@ function validateEmail(inputElement, msgElement, callback) {
 document.querySelector("form").addEventListener('submit', function(e) {
     e.preventDefault();
 
-    requiredFields();
-    reqIfRadioChecked();
-
+    requiredFields(reqField, reqErr, fieldFocus);
     validateLength(max8, 8, 0, max8Err, false, fieldFocus);
     validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
+
     if(min10Max25.value)
         validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-
     if(lettersField.value)
         onlyLetters(lettersField, fieldFocus);
     if(numbersField.value)
         onlyNumbers(numbersField, fieldFocus);
 
-    validateEmail(email, invalidEmailMsg, fieldFocus);
+    reqIfRadioChecked(radioYes, reqIfRadioChkdErr, reqIfRadioChkd, fieldFocus);
+
+    if(emailField.value)
+        validateEmail(emailField, invalidEmailErr, fieldFocus);
 });
 
 /* put event listeners on each field? And then pass the appropriate named function to it.
-* Could then maybe make the error message appear when the user clicked out out the field...
+* Could then maybe make the error message appear when the user clicked out of the field...
 * using focus / blur?
 
 * if no error message(s) submit form
