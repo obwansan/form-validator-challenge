@@ -1,5 +1,6 @@
-var reqField = document.querySelectorAll('.required');
-var reqErr = document.querySelectorAll('.reqErrMsg');
+var reqField = document.querySelector('.required');
+var reqErr = document.querySelector('.reqErrMsg');
+var reqErr2 = document.querySelector('.reqErrMsg2');
 var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
 var min10Max25 = document.querySelector('.min10Max25');
@@ -25,21 +26,35 @@ function fieldFocus(inputElement) {
     inputElement.focus();
     inputElement.classList.add('invalidField');
 }
+
+function fieldBlur(inputElement) {
+    inputElement.classList.remove('invalidField');
+}
+
 /**
  * Validates if no input entered
  *
  * @return error message if field value is empty
  */
-function requiredFields(inputElement, errMsgField, callback) {
-    inputElement.forEach(function (field) {
-        if (field.value === "") {
-            errMsgField.forEach(function (el) {
-                el.textContent = "A value is required for this field";
-            });
-            callback(field);
+// function requiredFields(inputElement, errMsgField, callback) {
+//     inputElement.forEach(function (field) {
+//         if (field.value === "") {
+//             errMsgField.forEach(function (el) {
+//                 el.textContent = "A value is required for this field";
+//             });
+//             callback(field);
+//         }
+//     })
+// }
+
+function requiredField(inputElement, errMsgField, callback) {
+
+        if (inputElement.value === "") {
+            errMsgField.textContent = "A value is required for this field";
         }
-    })
+        callback(inputElement);
 }
+
 /**
  * Validates field input length
  *
@@ -133,32 +148,43 @@ function validateEmail(inputElement, msgElement, callback) {
     }
 }
 /**
- * Prevents form submission until all fields validated
+ * Prevents filling other fields until field is validated
  *
- * @return error message if field(s) not valid
+ * @return error message and style field if not valid
  */
-document.querySelector("form").addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    requiredFields(reqField, reqErr, fieldFocus);
-    validateLength(max8, 8, 0, max8Err, false, fieldFocus);
-    validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
-
-    if(min10Max25.value) {
-        validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-    }
-    if(lettersField.value) {
-        onlyLetters(lettersField, fieldFocus);
-    }
-    if(numbersField.value) {
-        onlyNumbers(numbersField, fieldFocus);
-    }
-    reqIfRadioChecked(radioYes, reqIfRadioChkdErr, reqIfRadioChkd, fieldFocus);
-
-    if(emailField.value) {
-        validateEmail(emailField, invalidEmailErr, fieldFocus);
+reqField.addEventListener('blur', function() {
+    if (!reqField.value) {
+        reqErr.textContent = "A value is required for this field";
+        fieldFocus(reqField);
+    } else {
+        reqErr.textContent = "";
+        fieldBlur(reqField);
     }
 });
+
+// Just need blur eventListeners on the 2 required fields. Rest can be functions as before.
+
+
+
+
+    // validateLength(max8, 8, 0, max8Err, false, fieldFocus);
+    // validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
+    //
+    // if(min10Max25.value) {
+    //     validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
+    // }
+    // if(lettersField.value) {
+    //     onlyLetters(lettersField, fieldFocus);
+    // }
+    // if(numbersField.value) {
+    //     onlyNumbers(numbersField, fieldFocus);
+    // }
+    // reqIfRadioChecked(radioYes, reqIfRadioChkdErr, reqIfRadioChkd, fieldFocus);
+    //
+    // if(emailField.value) {
+    //     validateEmail(emailField, invalidEmailErr, fieldFocus);
+    // }
+
 
 /* put event listeners on each field? And then pass the appropriate named function to it.
 * Could then maybe make the error message appear when the user clicked out of the field...
