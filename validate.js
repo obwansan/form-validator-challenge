@@ -111,7 +111,7 @@ function onlyNumbers(inputElement, callback) {
  * @return error message if radio btn checked
  */
 function reqIfRadioChecked(radioBtn, radioBtnErrField, reqField, callback) {
-    if(radioBtn.checked) {
+    if(radioBtn.checked && !reqField.value ) {
         radioBtnErrField.textContent = "A value is required for this field";
         callback(reqField);
     }
