@@ -1,4 +1,3 @@
-var form = document.querySelector('form');
 var reqField1 = document.querySelector('.required1');
 var reqField2 = document.querySelector('.required2');
 var reqErr1 = document.querySelector('.reqErrMsg1');
@@ -175,11 +174,21 @@ reqField2.addEventListener('blur', function() {
     }
 });
 
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
+max8.addEventListener('blur', function() {
+    if (max8.value.length > 8) {
+        max8Err.textContent = "Maximum 8 characters allowed";
+        fieldFocus(max8);
+    } else {
+        fieldBlur(max8);
+        max8Err.textContent = "";
+    }
+});
+
+
+
+
 
     validateLength(max8, 8, 0, max8Err, false, fieldFocus);
-
 
     if(min10Max25.value) {
         validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
@@ -195,7 +204,7 @@ form.addEventListener('submit', function(e) {
     if(emailField.value) {
         validateEmail(emailField, invalidEmailErr, fieldFocus);
     }
-});
+
 
 // if no error message(s) submit form
 // or only if no error messages on required fields?
