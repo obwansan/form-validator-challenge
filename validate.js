@@ -1,20 +1,26 @@
-var reqField1 = document.querySelector('.required1');
-var reqField2 = document.querySelector('.required2');
-var reqErr1 = document.querySelector('.reqErrMsg1');
-var reqErr2 = document.querySelector('.reqErrMsg2');
+var reqField = document.querySelector('.required');
+var reqErr = document.querySelector('.reqErrMsg');
+var reqFieldLabel = document.querySelector('#reqFieldLabel');
+
 var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
+
 var min10Max25 = document.querySelector('.min10Max25');
-var reqMin10Max25 = document.querySelector('.reqMin10Max25');
 var minMaxErr = document.querySelector('.minMaxErr');
+
+var reqMin10Max25 = document.querySelector('.reqMin10Max25');
 var reqMinMaxErr = document.querySelector('.reqMinMaxErr');
+
 var lettersField = document.querySelector('#lettersOnly');
 var lettersOnlyErr = document.querySelector('.lettersOnlyMsg');
+
 var numbersField = document.querySelector('#numbersOnly');
 var numbersOnlyErr = document.querySelector('.numbersOnlyMsg');
+
 var radioYes = document.querySelector('#yes');
 var reqIfRadioChkd = document.querySelector('#reqIfRadioChkd');
 var reqIfRadioChkdErr = document.querySelector('.reqIfRadioChkdErr');
+
 var emailField = document.querySelector('.email');
 var invalidEmailErr = document.querySelector('.invalidEmailMsg');
 
@@ -25,35 +31,17 @@ var invalidEmailErr = document.querySelector('.invalidEmailMsg');
  */
 function fieldFocus(inputElement) {
     inputElement.focus();
+    inputElement.classList.remove('validField');
     inputElement.classList.add('invalidField');
 }
 
-function fieldBlur(inputElement) {
+function fieldClear(inputElement) {
     inputElement.classList.remove('invalidField');
+    inputElement.classList.add('validField');
 }
 
-/**
- * Validates if no input entered
- *
- * @return error message if field value is empty
- */
-// function requiredFields(inputElement, errMsgField, callback) {
-//     inputElement.forEach(function (field) {
-//         if (field.value === "") {
-//             errMsgField.forEach(function (el) {
-//                 el.textContent = "A value is required for this field";
-//             });
-//             callback(field);
-//         }
-//     })
-// }
-
-function requiredField(inputElement, errMsgField, callback) {
-
-        if (inputElement.value === "") {
-            errMsgField.textContent = "A value is required for this field";
-        }
-        callback(inputElement);
+function greenLabel(label) {
+    label.style.color = "green";
 }
 
 /**
@@ -148,29 +136,23 @@ function validateEmail(inputElement, msgElement, callback) {
         callback(inputElement);
     }
 }
+
+
+
+
 /**
  * Prevents filling other fields until field is validated
  *
  * @return error message and style field if not valid
  */
-reqField1.addEventListener('blur', function() {
-    if (!reqField1.value) {
-        reqErr1.textContent = "A value is required for this field";
-        fieldFocus(reqField1);
+reqField.addEventListener('blur', function() {
+    if (!reqField.value) {
+        reqErr.textContent = "A value is required for this field";
+        fieldFocus(reqField);
     } else {
-        reqErr1.textContent = "";
-        fieldBlur(reqField1);
-    }
-});
-
-reqField2.addEventListener('blur', function() {
-    if (!reqField2.value) {
-        reqErr2.textContent = "A value is required for this field";
-        fieldFocus(reqField2);
-    } else if (reqField2.value.length < 10 || reqField2.value.length > 25) {
-        validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
-    } else {
-        fieldBlur(reqField2);
+        reqErr.textContent = "";
+        fieldClear(reqField);
+        greenLabel(reqFieldLabel);
     }
 });
 
@@ -179,20 +161,36 @@ max8.addEventListener('blur', function() {
         max8Err.textContent = "Maximum 8 characters allowed";
         fieldFocus(max8);
     } else {
-        fieldBlur(max8);
-        max8Err.textContent = "";
+        if(max8.value) {
+            fieldClear(max8);
+            max8Err.textContent = "";
+        }
+    }
+});
+
+reqMin10Max25.addEventListener('blur', function() {
+    if (!reqMin10Max25.value) {
+        reqMinMaxErr.textContent = "A value is required for this field";
+        fieldFocus(reqMin10Max25);
+    } else if (reqMin10Max25.value.length < 10 || reqMin10Max25.value.length > 25) {
+        validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
+    } else {
+        fieldClear(reqMin10Max25);
+        reqMinMaxErr.textContent = "";
+    }
+});
+
+min10Max25.addEventListener('blur', function() {
+    if (min10Max25.value.length < 10 || min10Max25.value.length > 25) {
+        validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
+    } else {
+        fieldClear(min10Max25);
+        minMaxErr.textContent = "";
     }
 });
 
 
 
-
-
-    validateLength(max8, 8, 0, max8Err, false, fieldFocus);
-
-    if(min10Max25.value) {
-        validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-    }
     if(lettersField.value) {
         onlyLetters(lettersField, fieldFocus);
     }

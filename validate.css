@@ -6,10 +6,16 @@
 .numbersOnlyMsg,
 .reqIfRadioChkdErr,
 .invalidEmailMsg {
-    color: #ff0000;
+    color: #FF0000;
+    font-weight: bold;
 }
 
 .invalidField {
-    background-color: pink;
-    border: 1px solid #ff0000;
+    background-color: #FFB6C1;
+    border: 1px solid #FF0000;
+}
+
+.validField {
+    background-color: #98FB98;
+    border: 1px solid #98FB98;
 }
