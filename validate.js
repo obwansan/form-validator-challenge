@@ -1,5 +1,7 @@
-var reqField = document.querySelector('.required');
-var reqErr = document.querySelector('.reqErrMsg');
+var form = document.querySelector('form');
+var reqField1 = document.querySelector('.required1');
+var reqField2 = document.querySelector('.required2');
+var reqErr1 = document.querySelector('.reqErrMsg1');
 var reqErr2 = document.querySelector('.reqErrMsg2');
 var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
@@ -85,7 +87,7 @@ function validateLength(inputElement, maxLength, minLength, errElement, required
         }
     }
     if (required === true && inputElement.value.length < minLength) {
-        errMsg += "A value is required for this field";
+        errMsg += "Minimum " + minLength + " characters allowed";
         callback(inputElement);
     }
     errElement.textContent = errMsg;
@@ -152,48 +154,51 @@ function validateEmail(inputElement, msgElement, callback) {
  *
  * @return error message and style field if not valid
  */
-reqField.addEventListener('blur', function() {
-    if (!reqField.value) {
-        reqErr.textContent = "A value is required for this field";
-        fieldFocus(reqField);
+reqField1.addEventListener('blur', function() {
+    if (!reqField1.value) {
+        reqErr1.textContent = "A value is required for this field";
+        fieldFocus(reqField1);
     } else {
-        reqErr.textContent = "";
-        fieldBlur(reqField);
+        reqErr1.textContent = "";
+        fieldBlur(reqField1);
     }
 });
 
-// Just need blur eventListeners on the 2 required fields. Rest can be functions as before.
+reqField2.addEventListener('blur', function() {
+    if (!reqField2.value) {
+        reqErr2.textContent = "A value is required for this field";
+        fieldFocus(reqField2);
+    } else if (reqField2.value.length < 10 || reqField2.value.length > 25) {
+        validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
+    } else {
+        fieldBlur(reqField2);
+    }
+});
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    validateLength(max8, 8, 0, max8Err, false, fieldFocus);
 
 
+    if(min10Max25.value) {
+        validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
+    }
+    if(lettersField.value) {
+        onlyLetters(lettersField, fieldFocus);
+    }
+    if(numbersField.value) {
+        onlyNumbers(numbersField, fieldFocus);
+    }
+    reqIfRadioChecked(radioYes, reqIfRadioChkdErr, reqIfRadioChkd, fieldFocus);
 
+    if(emailField.value) {
+        validateEmail(emailField, invalidEmailErr, fieldFocus);
+    }
+});
 
-    // validateLength(max8, 8, 0, max8Err, false, fieldFocus);
-    // validateLength(reqMin10Max25, 25, 10, reqMinMaxErr, true, fieldFocus);
-    //
-    // if(min10Max25.value) {
-    //     validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-    // }
-    // if(lettersField.value) {
-    //     onlyLetters(lettersField, fieldFocus);
-    // }
-    // if(numbersField.value) {
-    //     onlyNumbers(numbersField, fieldFocus);
-    // }
-    // reqIfRadioChecked(radioYes, reqIfRadioChkdErr, reqIfRadioChkd, fieldFocus);
-    //
-    // if(emailField.value) {
-    //     validateEmail(emailField, invalidEmailErr, fieldFocus);
-    // }
-
-
-/* put event listeners on each field? And then pass the appropriate named function to it.
-* Could then maybe make the error message appear when the user clicked out of the field...
-* using focus / blur?
-
-* if no error message(s) submit form
-* or only if no error messages on required fields?
-
-*/
+// if no error message(s) submit form
+// or only if no error messages on required fields?
 
 // change color of field headings from black to green if entered correctly.
 // change from black to red if not entered correctly.
