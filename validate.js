@@ -1,28 +1,37 @@
+var form = document.querySelector('form');
+
 var reqField = document.querySelector('.required');
 var reqErr = document.querySelector('.reqErrMsg');
 var reqFieldLabel = document.querySelector('#reqFieldLabel');
 
 var max8 = document.querySelector('.max8');
 var max8Err = document.querySelector('.max8Err');
-
-var min10Max25 = document.querySelector('.min10Max25');
-var minMaxErr = document.querySelector('.minMaxErr');
+var max8Label = document.querySelector('#max8Label');
 
 var reqMin10Max25 = document.querySelector('.reqMin10Max25');
 var reqMinMaxErr = document.querySelector('.reqMinMaxErr');
+var reqMinMaxLabel = document.querySelector('#reqMinMaxLabel');
+
+var min10Max25 = document.querySelector('.min10Max25');
+var minMaxErr = document.querySelector('.minMaxErr');
+var minMaxLabel = document.querySelector('#minMaxLabel');
 
 var lettersField = document.querySelector('#lettersOnly');
 var lettersOnlyErr = document.querySelector('.lettersOnlyMsg');
+var lettersOnlyLabel = document.querySelector('#lettersOnlyLabel');
 
 var numbersField = document.querySelector('#numbersOnly');
 var numbersOnlyErr = document.querySelector('.numbersOnlyMsg');
+var numbersOnlyLabel = document.querySelector('#numbersOnlyLabel');
 
 var radioYes = document.querySelector('#yes');
 var reqIfRadioChkd = document.querySelector('#reqIfRadioChkd');
 var reqIfRadioChkdErr = document.querySelector('.reqIfRadioChkdErr');
+var reqIfRadioChkdLabel = document.querySelector('#reqIfRadioChkdLabel');
 
 var emailField = document.querySelector('.email');
 var invalidEmailErr = document.querySelector('.invalidEmailMsg');
+var invalidEmailLabel = document.querySelector('#invalidEmailLabel');
 
 /**
  * Applies focus to a field that isn't valid
@@ -57,8 +66,6 @@ function greenLabel(label) {
  * @return error message if string length greater or less than specified
  */
 
-//validateLength(min10Max25, 25, 10, minMaxErr, false, fieldFocus);
-
 function validateLength(inputElement, maxLength, minLength, errElement, required, callback) {
 
     var errMsg = "";
@@ -79,6 +86,7 @@ function validateLength(inputElement, maxLength, minLength, errElement, required
     }
     errElement.textContent = errMsg;
 }
+
 /**
  * Checks if field only contains letters
  *
@@ -94,6 +102,7 @@ function onlyLetters(inputElement, callback) {
         callback(inputElement);
     }
 }
+
 /**
  * Checks if field only contains numbers
  *
@@ -109,6 +118,7 @@ function onlyNumbers(inputElement, callback) {
         callback(inputElement);
     }
 }
+
 /**
  * Displays error message on field if radio btn checked
  *
@@ -120,6 +130,7 @@ function reqIfRadioChecked(radioBtn, radioBtnErrField, reqField, callback) {
         callback(reqField);
     }
 }
+
 /**
  * Checks if email is valid
  *
@@ -136,9 +147,6 @@ function validateEmail(inputElement, msgElement, callback) {
         callback(inputElement);
     }
 }
-
-
-
 
 /**
  * Prevents filling other fields until field is validated
@@ -164,6 +172,7 @@ max8.addEventListener('blur', function() {
         if(max8.value) {
             fieldClear(max8);
             max8Err.textContent = "";
+            greenLabel(max8Label);
         }
     }
 });
@@ -177,6 +186,7 @@ reqMin10Max25.addEventListener('blur', function() {
     } else {
         fieldClear(reqMin10Max25);
         reqMinMaxErr.textContent = "";
+        greenLabel(reqMinMaxLabel);
     }
 });
 
@@ -186,26 +196,62 @@ min10Max25.addEventListener('blur', function() {
     } else {
         fieldClear(min10Max25);
         minMaxErr.textContent = "";
+        greenLabel(minMaxLabel);
     }
 });
 
-
-
-    if(lettersField.value) {
-        onlyLetters(lettersField, fieldFocus);
+lettersField.addEventListener('blur', function() {
+    var letters = /^[A-Za-z]+$/;
+    if(lettersField.value && !lettersField.value.match(letters)) {
+        lettersOnlyErr.textContent = "This field must only contain letters";
+        fieldFocus(lettersField);
+    } else {
+        if (lettersField.value) {
+            lettersOnlyErr.textContent = "";
+            fieldClear(lettersField);
+            greenLabel(lettersOnlyLabel);
+        }
     }
-    if(numbersField.value) {
-        onlyNumbers(numbersField, fieldFocus);
+});
+
+numbersField.addEventListener('blur', function() {
+    var numbers = /^[0-9]+$/;
+    if(numbersField.value && !numbersField.value.match(numbers)) {
+        numbersOnlyErr.textContent = "This field must only contain numbers";
+        fieldFocus(numbersField);
+    } else {
+        if (numbersField.value) {
+            numbersOnlyErr.textContent = "";
+            fieldClear(numbersField);
+            greenLabel(numbersOnlyLabel);
+        }
     }
-    reqIfRadioChecked(radioYes, reqIfRadioChkdErr, reqIfRadioChkd, fieldFocus);
+});
 
-    if(emailField.value) {
-        validateEmail(emailField, invalidEmailErr, fieldFocus);
+reqIfRadioChkd.addEventListener('blur', function() {
+    if(radioYes.checked && !reqIfRadioChkd.value ) {
+        reqIfRadioChkdErr.textContent = "A value is required for this field";
+        fieldFocus(reqIfRadioChkd);
+    } else {
+        if (reqIfRadioChkd.value) {
+            reqIfRadioChkdErr.textContent = "";
+            fieldClear(reqIfRadioChkd);
+            greenLabel(reqIfRadioChkdLabel);
+        }
     }
+});
 
+emailField.addEventListener('blur', function() {
+    var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (emailField.value && !emailField.value.match(mailFormat)) {
+        invalidEmailErr.textContent = "You have entered an invalid email address!";
+        fieldFocus(emailField);
+    } else {
+        if (emailField.value) {
+            invalidEmailErr.textContent = "";
+            fieldClear(emailField);
+            greenLabel(invalidEmailLabel);
+        }
+    }
+});
 
-// if no error message(s) submit form
-// or only if no error messages on required fields?
-
-// change color of field headings from black to green if entered correctly.
-// change from black to red if not entered correctly.
