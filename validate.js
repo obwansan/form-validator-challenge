@@ -1,5 +1,3 @@
-var form = document.querySelector('form');
-
 var reqField = document.querySelector('.required');
 var reqErr = document.querySelector('.reqErrMsg');
 var reqFieldLabel = document.querySelector('#reqFieldLabel');
@@ -54,6 +52,19 @@ function greenLabel(label) {
 }
 
 /**
+ * Validates if no input entered
+ *
+ * @return error message if field value is empty
+ */
+function requiredField(inputElement, errMsgField, callback) {
+    if (inputElement.value === "") {
+        errMsgField.textContent = "A value is required for this field";
+    }
+    callback(inputElement);
+}
+
+
+/**
  * Validates field input length
  *
  * @param inputElement String length to be checked
@@ -65,7 +76,6 @@ function greenLabel(label) {
  *
  * @return error message if string length greater or less than specified
  */
-
 function validateLength(inputElement, maxLength, minLength, errElement, required, callback) {
 
     var errMsg = "";
@@ -87,72 +97,6 @@ function validateLength(inputElement, maxLength, minLength, errElement, required
     errElement.textContent = errMsg;
 }
 
-/**
- * Checks if field only contains letters
- *
- * @param inputElement String HTML input field
- * @param callback Function to be passed fieldFocus function
- *
- * @return error message if field contains any non-alphabetic characters
- */
-function onlyLetters(inputElement, callback) {
-    var letters = /^[A-Za-z]+$/;
-    if(!inputElement.value.match(letters)) {
-        lettersOnlyErr.textContent = "This field must only contain letters";
-        callback(inputElement);
-    }
-}
-
-/**
- * Checks if field only contains numbers
- *
- * @param inputElement String HTML input field
- * @param callback Function to be passed fieldFocus function
- *
- * @return error message if field contains any non-numeric characters
- */
-function onlyNumbers(inputElement, callback) {
-    var numbers = /^[0-9]+$/;
-    if(!inputElement.value.match(numbers)) {
-        numbersOnlyErr.textContent = "This field must only contain numbers";
-        callback(inputElement);
-    }
-}
-
-/**
- * Displays error message on field if radio btn checked
- *
- * @return error message if radio btn checked
- */
-function reqIfRadioChecked(radioBtn, radioBtnErrField, reqField, callback) {
-    if(radioBtn.checked && !reqField.value ) {
-        radioBtnErrField.textContent = "A value is required for this field";
-        callback(reqField);
-    }
-}
-
-/**
- * Checks if email is valid
- *
- * @param inputElement String HTML input field
- * @param msgElement String HTML message display field
- * @param callback Function to be passed fieldFocus function
- *
- * @return error message if email doesn't match regEx
- */
-function validateEmail(inputElement, msgElement, callback) {
-    var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if(!inputElement.value.match(mailFormat)) {
-        msgElement.textContent = "You have entered an invalid email address!";
-        callback(inputElement);
-    }
-}
-
-/**
- * Prevents filling other fields until field is validated
- *
- * @return error message and style field if not valid
- */
 reqField.addEventListener('blur', function() {
     if (!reqField.value) {
         reqErr.textContent = "A value is required for this field";
@@ -255,3 +199,10 @@ emailField.addEventListener('blur', function() {
     }
 });
 
+document.querySelector("form").addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    requiredField(reqField, reqErr, fieldFocus);
+    requiredField(reqMin10Max25, reqMinMaxErr, fieldFocus);
+
+});
