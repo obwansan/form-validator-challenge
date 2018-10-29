@@ -160,14 +160,3 @@ document.querySelector("form").addEventListener('submit', function(e) {
     }
 });
 
-/* put event listeners on each field? And then pass the appropriate named function to it.
-* Could then maybe make the error message appear when the user clicked out of the field...
-* using focus / blur?
-
-* if no error message(s) submit form
-* or only if no error messages on required fields?
-
-*/
-
-// change color of field headings from black to green if entered correctly.
-// change from black to red if not entered correctly.
